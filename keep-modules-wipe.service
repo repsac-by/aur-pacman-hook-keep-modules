@@ -1,0 +1,9 @@
+[Unit]
+Description=Wipe keeped modules
+
+[Service]
+Type=oneshot
+ExecStart=/usr/share/libalpm/scripts/keep-modules wipe
+
+[Install]
+WantedBy=basic.target

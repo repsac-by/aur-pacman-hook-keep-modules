@@ -1,0 +1,11 @@
+[Trigger]
+Operation = Upgrade
+Operation = Remove
+Type = File
+Target = boot/vmlinuz-*
+
+[Action]
+Description = Stash current modules
+When = PreTransaction
+NeedsTargets
+Exec = /usr/share/libalpm/scripts/keep-modules stash

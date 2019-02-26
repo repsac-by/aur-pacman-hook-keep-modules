@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Upgrade
+Operation = Remove
+Type = File
+Target = usr/lib/modules/*/modules.alias
+
+[Action]
+Description = Restore stashed modules
+When = PostTransaction
+Exec = /usr/share/libalpm/scripts/keep-modules restore

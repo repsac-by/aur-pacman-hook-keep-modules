@@ -1,0 +1,48 @@
+#!/usr/bin/bash
+shopt -s nullglob
+set -eu
+
+MODULES="/usr/lib/modules"
+STASH="$MODULES/.stash"
+KVER=$(uname -r)
+
+stash() {
+	local current=$(pacman -Qqo "$MODULES/$KVER/modules.alias" 2> /dev/null)
+	while read -r target; do
+		if [[ -z "$current" || "boot/vmlinuz-$current" == "$target" ]]; then
+			echo "==> Stashing modules: $KVER"
+			install -d "$STASH"
+			cp -rlxt "$STASH" "$MODULES/$KVER" 2>/dev/null
+			return 0
+		fi
+	done
+}
+
+restore() {
+	local target
+	if [[ -d "$STASH/$KVER" && ! -d "$MODULES/$KVER" ]]; then
+		echo "==> Restore modules: $KVER"
+		mv -t "$MODULES" "$STASH/$KVER"
+		chattr +d "$MODULES/$KVER"
+	fi
+	rm -rf "$STASH"
+}
+
+wipe() {
+	local target
+	for target in "$MODULES"/*; do
+		if [[ -d "$target" && "${target##*/}" != "$KVER" && $(lsattr -d "$target") =~ ^[-[:alpha:]]+d ]]; then
+			rm -rf "$target"
+		fi
+	done
+}
+
+usage() {
+	echo "usage: ${0##*/} <stash|restore|wipe|usage>"
+}
+
+case ${1:-} in
+	stash|restore|wipe|usage) $1 ;;
+
+	*) usage >&2 ; exit 1 ;;
+esac
