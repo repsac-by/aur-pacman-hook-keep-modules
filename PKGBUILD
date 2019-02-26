@@ -1,5 +1,3 @@
-# Maintainer: surefire <surefire@cryptomile.net>
-
 pkgname='pacman-hook-keep-modules'
 pkgver=3
 pkgrel=5
