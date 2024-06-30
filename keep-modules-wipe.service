@@ -1,9 +1,11 @@
 [Unit]
 Description=Wipe keeped modules
+After=local-fs.target
+Before=umount.target
 
 [Service]
 Type=oneshot
 ExecStart=/usr/share/libalpm/scripts/keep-modules wipe
 
 [Install]
-WantedBy=basic.target
+WantedBy=multi-user.target

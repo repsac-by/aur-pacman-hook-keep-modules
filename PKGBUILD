@@ -1,7 +1,7 @@
 pkgname='pacman-hook-keep-modules'
-pkgver=3
-pkgrel=5
-pkgdesc='Keep modules'
+pkgver=5
+pkgrel=1
+pkgdesc='To keep the kernel modules after an update or removal until reboot'
 arch=('any')
 license=('MIT')
 source=(
@@ -10,18 +10,23 @@ source=(
 	'keep-modules-wipe.service'
 	'keep-modules'
 )
-depends=('pacman')
-sha1sums=('a9e4f9bb033a7f2eaef374717174b1aabd93c6ac'
-          'ad0c642bbfb348567893357bd89f88d0399372a6'
-          '602dd68a8ec2118405b4501c4fecda5b6ed358ed'
-          'f596bff4e89d0d0f239b8b3a79d3f0aa578f1581')
+sha1sums=('d40cca5954556af0f0b0f8cca34bd317894e5a55'
+          'b1958cfdb16c461e94e7a8c4f538abc330dbcf6f'
+          'c57711ba86954062197271178a22dda232642b9b'
+          'd68d9692599bc1cc80a34eeae0bda257c913c130')
 
 package() {
+	depends=(
+		'pacman'
+		'systemd'
+		'coreutils'
+	)
+
 	install -Dt "$pkgdir/usr/share/libalpm/scripts" -m755 keep-modules
 	install -Dt "$pkgdir/usr/share/libalpm/hooks"   -m644 10-keep-modules-{pre,post}.hook
 	install -Dt "$pkgdir/usr/lib/systemd/system"    -m644 keep-modules-wipe.service
 
 	# #Enable service
-	install -d "$pkgdir/usr/lib/systemd/system/basic.target.wants"
-	ln -st "$pkgdir/usr/lib/systemd/system/basic.target.wants" ../keep-modules-wipe.service
+	install -d "$pkgdir/usr/lib/systemd/system/multi-user.target.wants"
+	ln -st "$pkgdir/usr/lib/systemd/system/multi-user.target.wants" ../keep-modules-wipe.service
 }
