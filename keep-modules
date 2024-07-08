@@ -3,15 +3,16 @@ shopt -s nullglob
 set -eu
 
 KVER=$(uname -r)
-MODULES_DIR="/usr/lib/modules"
+MDIR="/usr/lib/modules"
 
 stash() {
 	local target
 	while read -r target; do
-		if [[ "/$target" == "$MODULES_DIR/$KVER/vmlinuz" ]]; then
+		if [[ "/$target" == "$MDIR/$KVER/vmlinuz" ]]; then
 			echo "==> Stashing kernel modules: $KVER"
-			cp -rlx "$MODULES_DIR/$KVER" -T "$MODULES_DIR/.$KVER"
-			chattr +d "$MODULES_DIR/.$KVER"
+			install -d "$MDIR/.$KVER"
+			chattr +d "$MDIR/.$KVER"
+			cp -rlxt "$MDIR/.$KVER" "$MDIR/$KVER"/{kernel,modules.*}
 		fi
 	done
 }
@@ -19,17 +20,19 @@ stash() {
 restore() {
 	local target
 
-	if [[ -d "$MODULES_DIR/.$KVER" ]]; then
+	if [[ -d "$MDIR/.$KVER" ]]; then
 		echo "==> Restore kernel modules: $KVER"
-		rm -rf "$MODULES_DIR/$KVER"
-		mv -T "$MODULES_DIR/.$KVER" "$MODULES_DIR/$KVER"
+		install -d "$MDIR/$KVER"
+		chattr +d "$MDIR/$KVER"
+		cp -rlxt "$MDIR/$KVER" "$MDIR/.$KVER"/{kernel,modules.*}
+		rm -r "$MDIR/.$KVER"
 	fi
 
 }
 
 wipe() {
 	local target
-	for target in "$MODULES_DIR"/.* "$MODULES_DIR"/*; do
+	for target in "$MDIR"/.* "$MDIR"/*; do
 		if [[ -d "$target" && "${target##*/}" != "$KVER" && $(lsattr -d "$target") =~ ^[-[:alpha:]]*d ]]; then
 			rm -rf "$target"
 		fi
