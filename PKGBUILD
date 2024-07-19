@@ -1,6 +1,6 @@
 pkgname='pacman-hook-keep-modules'
-pkgver=5
-pkgrel=2
+pkgver=6
+pkgrel=1
 pkgdesc='To keep the kernel modules after an update or removal until reboot'
 arch=('any')
 license=('MIT')
@@ -13,7 +13,7 @@ source=(
 sha1sums=('d40cca5954556af0f0b0f8cca34bd317894e5a55'
           'b1958cfdb16c461e94e7a8c4f538abc330dbcf6f'
           'c57711ba86954062197271178a22dda232642b9b'
-          '7329183dd183c5c2dc119b249eeefb9bae5572bb')
+          '86f7496784a504630eccecd943ea0653f7a6d867')
 
 package() {
 	depends=(

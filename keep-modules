@@ -12,7 +12,7 @@ stash() {
 			echo "==> Stashing kernel modules: $KVER"
 			install -d "$MDIR/.$KVER"
 			chattr +d "$MDIR/.$KVER"
-			cp -rlxt "$MDIR/.$KVER" "$MDIR/$KVER"/{kernel,modules.*}
+			cp -alut "$MDIR/.$KVER" "$MDIR/$KVER"/*
 		fi
 	done
 }
@@ -24,7 +24,7 @@ restore() {
 		echo "==> Restore kernel modules: $KVER"
 		install -d "$MDIR/$KVER"
 		chattr +d "$MDIR/$KVER"
-		cp -rlxt "$MDIR/$KVER" "$MDIR/.$KVER"/{kernel,modules.*}
+		cp -alut "$MDIR/$KVER" "$MDIR/.$KVER"/*
 		rm -r "$MDIR/.$KVER"
 	fi
 
